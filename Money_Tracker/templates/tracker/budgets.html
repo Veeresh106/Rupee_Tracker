@@ -1,0 +1,66 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="app-card p-4">
+            <h4 class="mb-3">Set Budget</h4>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary w-100">Save Budget</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="app-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h4 class="mb-0">Budgets</h4>
+                <form method="get" class="d-flex gap-2 align-items-center">
+                    <label class="visually-hidden" for="budget-month">Month</label>
+                    <input id="budget-month" type="month" name="month" value="{{ month }}" class="form-control">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                </form>
+            </div>
+            {% if budgets %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Month</th>
+                                <th>Limit</th>
+                                <th>Spent</th>
+                                <th>Status</th>
+                                <th class='text-end'>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for budget in budgets %}
+                            <tr>
+                                <td>{{ budget.category.name }}</td>
+                                <td>{{ budget.month_year }}</td>
+                                <td>₹{{ budget.monthly_limit }}</td>
+                                <td>₹{{ budget.current_spent }}</td>
+                                <td>
+                                    <span class="alert-badge {{ budget.alert_level }}">{{ budget.calculate_usage_ratio|floatformat:0 }}% · {{ budget.alert_level|title }}</span>
+                                </td>
+                                <td class="text-end">
+                                    <a href="{% url 'budget_edit' budget.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                    <form method="post" action="{% url 'budget_delete' budget.pk %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">No budgets yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

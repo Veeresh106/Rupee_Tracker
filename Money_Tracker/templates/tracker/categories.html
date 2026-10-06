@@ -1,0 +1,51 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="app-card p-4">
+            <h4 class="mb-3">Add Category</h4>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary w-100">Save Category</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="app-card p-4">
+            <h4 class="mb-3">Categories</h4>
+            {% if categories %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in categories %}
+                            <tr>
+                                <td>{{ category.name }}</td>
+                                <td>{{ category.description|default:'—' }}</td>
+                                <td class="text-end">
+                                    <a href="{% url 'category_edit' category.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                    <form method="post" action="{% url 'category_delete' category.pk %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">No categories yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

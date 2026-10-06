@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpenseTracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #17243a;
+            --muted: #64748b;
+            --navy: #102441;
+            --navy-light: #1b365d;
+            --rose: #e84d91;
+            --rose-light: #fff0f6;
+            --blue: #3973df;
+            --blue-light: #edf4ff;
+            --teal: #13a891;
+            --teal-light: #e6faf5;
+            --gold: #e6a52e;
+            --gold-light: #fff7e5;
+            --line: #e3e9f2;
+            --paper: #ffffff;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            background-color: #f2f5fa;
+            background-image: linear-gradient(135deg, rgba(232, 77, 145, 0.035) 25%, transparent 25%), linear-gradient(315deg, rgba(57, 115, 223, 0.035) 25%, transparent 25%);
+            background-position: 0 0, 12px 12px;
+            background-size: 24px 24px;
+            font-family: "Segoe UI", sans-serif;
+            color: var(--ink);
+        }
+
+        h1, h2, h3, h4, h5, h6 { color: var(--ink); font-weight: 700; }
+        a { color: var(--blue); }
+
+        .brand-pink {
+            background: var(--rose);
+            color: white;
+            border-radius: 8px;
+            padding: 0.7rem 1rem;
+            font-weight: 700;
+            display: inline-block;
+            letter-spacing: 0;
+            box-shadow: 0 6px 16px rgba(232, 77, 145, 0.2);
+        }
+
+        .sidebar {
+            background: var(--navy);
+            min-height: 100vh;
+            color: white;
+            padding: 1.4rem 0.9rem;
+            border-right: 4px solid var(--rose);
+        }
+
+        .sidebar .brand-pink { margin: 0 0 1.4rem 0.25rem !important; }
+
+        .nav-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 0.9rem;
+            border-radius: 7px;
+            color: #dfeafc;
+            text-decoration: none;
+            margin-bottom: 0.35rem;
+            font-weight: 500;
+            transition: background-color 150ms ease, color 150ms ease, transform 150ms ease;
+        }
+
+        .nav-pill.active,
+        .nav-pill:hover {
+            background: var(--navy-light);
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-pill.active { box-shadow: inset 3px 0 0 var(--rose); }
+        .nav-pill:hover { transform: translateX(2px); }
+        .sidebar form { margin-top: 0.2rem; }
+
+        .app-card {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(23, 36, 58, 0.055);
+            background: var(--paper);
+        }
+
+        .stat-card {
+            background: var(--blue-light);
+            border: 1px solid #dce8fc;
+            border-left: 4px solid var(--blue);
+            border-radius: 8px;
+            padding: 1.15rem;
+            height: 100%;
+        }
+
+        .row.mb-4 > div:nth-child(1) .stat-card { background: var(--rose-light); border-color: #f8d9e7; border-left-color: var(--rose); }
+        .row.mb-4 > div:nth-child(2) .stat-card { background: var(--blue-light); border-color: #dce8fc; border-left-color: var(--blue); }
+        .row.mb-4 > div:nth-child(3) .stat-card { background: var(--teal-light); border-color: #d0f1e8; border-left-color: var(--teal); }
+
+        .stat-card h4 {
+            font-size: 1.6rem;
+            margin: 0;
+        }
+
+        .alert-badge {
+            display: inline-block;
+            padding: 0.35rem 0.7rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .alert-badge.normal { background: #dff7ea; color: #1d7a4a; }
+        .alert-badge.warning { background: #fff2cc; color: #b26a00; }
+        .alert-badge.danger { background: #ffe0e6; color: #b42318; }
+
+        .form-control, .form-select {
+            border-radius: 7px;
+            border: 1px solid #d5deeb;
+            padding: 0.65rem 0.8rem;
+        }
+
+        form p > input,
+        form p > select,
+        form p > textarea,
+        form p > .form-control,
+        form p > .form-select {
+            width: 100%;
+            border: 1px solid #d5deeb;
+            border-radius: 8px;
+            padding: 0.65rem 0.8rem;
+            background-color: #fff;
+        }
+
+        form p > input:focus,
+        form p > select:focus,
+        form p > textarea:focus {
+            border-color: #3973df;
+            outline: 3px solid rgba(57, 115, 223, 0.15);
+        }
+
+        form p > label {
+            display: block;
+            margin-bottom: 0.35rem;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: var(--blue);
+            border: none;
+        }
+
+        .btn-success {
+            background: var(--teal);
+            border: none;
+        }
+
+        .btn-danger {
+            background: #d94b5b;
+            border: none;
+        }
+
+        .btn-primary:hover, .btn-primary:focus { background: #285fc6; }
+        .btn-success:hover, .btn-success:focus { background: #0c8e79; }
+        .btn-danger:hover, .btn-danger:focus { background: #bd3545; }
+        .btn { border-radius: 7px; font-weight: 650; }
+
+        .soft-box {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-top: 3px solid var(--teal);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .table thead th {
+            color: #56677f;
+            background: #f3f6fb;
+            border-bottom-color: #dfe6f0;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .table > :not(caption) > * > * { padding: 0.85rem 0.7rem; }
+        .list-group-item { border-color: var(--line); }
+        .alert { border: 0; border-left: 4px solid var(--blue); border-radius: 7px; }
+
+        .auth-page {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+            min-height: min(760px, calc(100vh - 3rem));
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: var(--paper);
+            box-shadow: 0 18px 55px rgba(16, 36, 65, 0.11);
+        }
+
+        .auth-story {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100%;
+            padding: clamp(2rem, 5vw, 4.5rem);
+            overflow: hidden;
+            background: var(--navy);
+            color: white;
+        }
+
+        .auth-story::after {
+            position: absolute;
+            right: -90px;
+            bottom: -120px;
+            width: 360px;
+            height: 260px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            box-shadow: 0 0 0 30px rgba(255, 255, 255, 0.035), 0 0 0 60px rgba(255, 255, 255, 0.025);
+            content: "";
+            transform: rotate(-18deg);
+            pointer-events: none;
+        }
+
+        .auth-story h1 { max-width: 540px; margin: 2.4rem 0 1rem; color: white; font-size: 2.5rem; line-height: 1.12; }
+        .auth-story-copy { max-width: 500px; color: #d0dced; font-size: 1.05rem; line-height: 1.7; }
+        .auth-eyebrow { color: #ffabd0; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; }
+        .auth-footnote { position: relative; z-index: 1; color: #b9c9de; font-size: 0.88rem; }
+
+        .auth-preview {
+            position: relative;
+            z-index: 1;
+            max-width: 430px;
+            margin-top: 2rem;
+            padding: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.17);
+            border-radius: 9px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(6px);
+        }
+
+        .auth-preview-top { display: flex; justify-content: space-between; gap: 1rem; color: #d0dced; font-size: 0.78rem; }
+        .auth-preview-value { margin-top: 0.35rem; color: white; font-size: 1.8rem; font-weight: 750; }
+        .auth-bars { display: flex; align-items: end; gap: 0.45rem; height: 72px; margin-top: 0.6rem; }
+        .auth-bars span { flex: 1; min-width: 10px; border-radius: 3px 3px 0 0; background: var(--rose); }
+        .auth-bars span:nth-child(2n) { background: #45c7b2; }
+        .auth-bars span:nth-child(3n) { background: #79a9ff; }
+
+        .auth-form-panel { display: grid; place-items: center; padding: clamp(1.5rem, 4vw, 3.5rem); }
+        .auth-form-card { width: min(100%, 430px); }
+        .auth-form-card h2 { margin: 0 0 0.5rem; font-size: 1.9rem; }
+        .auth-form-intro { margin-bottom: 1.7rem; color: var(--muted); }
+        .auth-form-card form p { margin-bottom: 1rem; }
+        .auth-form-card .auth-submit { min-height: 48px; margin-top: 0.5rem; background: var(--rose); }
+        .auth-form-card .auth-submit:hover { background: #ce3477; }
+        .auth-form-card .errorlist { margin: 0.25rem 0; padding-left: 1.2rem; color: #bd3545; font-size: 0.88rem; }
+        .auth-form-card .helptext { display: block; margin-top: 0.3rem; color: var(--muted); font-size: 0.78rem; }
+        .auth-form-card ul.helptext { padding-left: 1rem; }
+        .auth-form-card a { font-weight: 650; }
+
+        .landing-page { padding-top: 2.5rem; padding-bottom: 3rem; }
+        .landing-copy { padding: 1rem 0; }
+        .landing-copy h1 { max-width: 650px; margin: 1rem 0; font-size: 3.35rem; line-height: 1.05; }
+        .landing-copy h1 span { color: var(--rose); }
+        .landing-copy > p { max-width: 570px; color: var(--muted); font-size: 1.12rem; line-height: 1.7; }
+        .landing-features .soft-box:nth-child(1) { border-top-color: var(--rose); }
+        .landing-features .soft-box:nth-child(2) { border-top-color: var(--blue); }
+        .landing-features .soft-box:nth-child(3) { border-top-color: var(--gold); }
+        .landing-preview {
+            position: relative;
+            padding: 1.5rem;
+            border: 1px solid #dce5f1;
+            border-radius: 12px;
+            background: linear-gradient(145deg, #e8f4f2 0%, #edf3ff 52%, #fff0f6 100%);
+            box-shadow: 0 18px 40px rgba(16, 36, 65, 0.12);
+        }
+        .landing-preview-screen { padding: 1.2rem; border: 1px solid rgba(16, 36, 65, 0.09); border-radius: 8px; background: white; }
+        .preview-metric { padding: 0.8rem; border-radius: 6px; background: var(--teal-light); }
+        .preview-metric small { display: block; color: var(--muted); }
+        .preview-metric strong { color: var(--ink); font-size: 1.3rem; }
+        .preview-line { display: flex; justify-content: space-between; gap: 1rem; padding: 0.7rem 0; border-bottom: 1px solid var(--line); font-size: 0.88rem; }
+        .preview-line:last-child { border-bottom: 0; }
+        .preview-dot { display: inline-block; width: 9px; height: 9px; margin-right: 0.45rem; border-radius: 2px; background: var(--rose); }
+        .preview-dot.blue { background: var(--blue); }
+        .preview-dot.teal { background: var(--teal); }
+
+        @media (max-width: 991.98px) {
+            .sidebar { min-height: auto; border-right: 0; border-bottom: 4px solid var(--rose); }
+            .sidebar nav { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.25rem; }
+            .sidebar .nav-pill { margin-bottom: 0; }
+            main { padding-left: 1rem !important; padding-right: 1rem !important; }
+            .auth-page { grid-template-columns: 1fr 0.9fr; }
+            .auth-story { padding: 2rem; }
+            .auth-story h1 { font-size: 2.1rem; }
+            .landing-copy h1 { font-size: 2.8rem; }
+        }
+
+        @media (max-width: 767.98px) {
+            .auth-page { display: block; min-height: auto; }
+            .auth-story { min-height: 330px; padding: 1.5rem; }
+            .auth-story h1 { margin-top: 1.6rem; font-size: 1.9rem; }
+            .auth-story-copy { font-size: 0.95rem; }
+            .auth-preview { display: none; }
+            .auth-form-panel { padding: 2rem 1.4rem; }
+            .auth-form-card h2 { font-size: 1.65rem; }
+            .landing-page { padding-top: 1rem; }
+            .landing-copy h1 { font-size: 2.35rem; }
+            .landing-preview { margin-top: 1rem; }
+            .sidebar nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .nav-pill { padding: 0.65rem; font-size: 0.9rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <div class="container-fluid">
+        <div class="row">
+            <aside class="col-lg-2 sidebar">
+                <div class="brand-pink">ExpenseTracker</div>
+                <nav class="d-flex flex-column">
+                    <a class="nav-pill {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">📊 Dashboard</a>
+                    <a class="nav-pill {% if request.resolver_match.url_name == 'categories' %}active{% endif %}" href="{% url 'categories' %}">📁 Categories</a>
+                    <a class="nav-pill {% if request.resolver_match.url_name == 'budgets' %}active{% endif %}" href="{% url 'budgets' %}">💰 Budgets</a>
+                    <a class="nav-pill {% if request.resolver_match.url_name == 'expenses' %}active{% endif %}" href="{% url 'expenses' %}">🧾 Expenses</a>
+                    <a class="nav-pill {% if request.resolver_match.url_name == 'reports' %}active{% endif %}" href="{% url 'reports' %}">📈 Reports</a>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button class="nav-pill border-0 bg-transparent w-100 text-start" type="submit">🚪 Logout</button>
+                    </form>
+                </nav>
+            </aside>
+
+            <main class="col-lg-10 px-4 py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h3 class="mb-0">{{ request.resolver_match.url_name|title }}</h3>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 36px; height:36px;">{{ user.username|slice:':1'|upper }}</div>
+                        <span class="fw-semibold">{{ user.username }}</span>
+                    </div>
+                </div>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+    {% else %}
+        <div class="container py-4">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    {% if user.is_authenticated %}
+            </main>
+        </div>
+    </div>
+    {% else %}
+        </div>
+    {% endif %}
+
+    {% if user.is_authenticated and budget_alerts %}
+    <div class="modal fade" id="budgetAlertModal" tabindex="-1" aria-labelledby="budgetAlertTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header {% if budget_alerts.0.alert_level == 'danger' %}bg-danger-subtle{% else %}bg-warning-subtle{% endif %}">
+                    <h2 class="modal-title fs-5" id="budgetAlertTitle">Budget warning</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% for alert in budget_alerts %}
+                    <div class="{% if not forloop.first %}border-top pt-3 mt-3{% endif %}">
+                        <p class="fw-semibold mb-1">{{ alert.category }}: {{ alert.usage_percent|floatformat:0 }}% used</p>
+                        <p class="mb-0">You've used {{ alert.usage_percent|floatformat:0 }}% of your {{ alert.category }} budget. Please use your money carefully.{% if alert.alert_level == 'danger' %} Your budget limit has been reached or exceeded.{% endif %}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">I understand</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const warningModal = document.getElementById('budgetAlertModal');
+            if (warningModal) {
+                bootstrap.Modal.getOrCreateInstance(warningModal).show();
+            }
+        });
+    </script>
+    {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

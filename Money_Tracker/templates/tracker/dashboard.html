@@ -1,0 +1,106 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+        <h2 class="mb-1">Dashboard</h2>
+        <p class="text-muted mb-0">Welcome back, {{ user.username }}! Here's your financial overview.</p>
+    </div>
+    <form method="get" class="d-flex align-items-center gap-2">
+        <label for="month" class="form-label mb-0">Month</label>
+        <input type="month" class="form-control" name="month" value="{{ month }}">
+        <button type="submit" class="btn btn-primary">Apply</button>
+    </form>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="text-muted small">Total Spent</div>
+            <h4 class="mt-2">₹{{ total_spent }}</h4>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="text-muted small">Total Budget</div>
+            <h4 class="mt-2">₹{{ total_budget }}</h4>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="text-muted small">Remaining</div>
+            <h4 class="mt-2">₹{{ total_remaining }}</h4>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="app-card p-4 mb-4">
+            <h5 class="mb-3">Add Expense</h5>
+            <form method="post" action="{% url 'expenses_create' %}">
+                {% csrf_token %}
+                <input type="hidden" name="return_to" value="dashboard">
+                <input type="hidden" name="month" value="{{ month }}">
+                {{ expense_form.as_p }}
+                <button type="submit" class="btn btn-success w-100">Save Expense</button>
+            </form>
+        </div>
+
+        <div class="app-card p-4">
+            <h5 class="mb-3">Recent Expenses</h5>
+            {% if recent_expenses %}
+            <ul class="list-group list-group-flush">
+                {% for expense in recent_expenses %}
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <div>
+                        <div class="fw-semibold">{{ expense.category.name }}</div>
+                        <small class="text-muted">{{ expense.date }}</small>
+                    </div>
+                    <strong>₹{{ expense.amount }}</strong>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted mb-0">No recent expenses.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="app-card p-4">
+            <h5 class="mb-3">Category Budget Status</h5>
+            {% if budget_rows %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Spent</th>
+                                <th>Limit</th>
+                                <th>Remaining</th>
+                                <th>Usage</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in budget_rows %}
+                            <tr>
+                                <td>{{ row.object.category.name }}</td>
+                                <td>₹{{ row.spent }}</td>
+                                <td>₹{{ row.object.monthly_limit }}</td>
+                                <td>₹{{ row.remaining }}</td>
+                                <td>{{ row.usage_ratio|floatformat:2 }}%</td>
+                                <td><span class="alert-badge {{ row.alert_level }}">{{ row.alert_level|title }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">No budgets for this month yet. Create one from the budgets page.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

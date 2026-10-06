@@ -1,0 +1,57 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="app-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0">Reports</h4>
+                <form method="get" class="d-flex gap-2 align-items-center">
+                    <input type="month" name="month" value="{{ month }}" class="form-control">
+                    <button class="btn btn-primary" type="submit">Apply</button>
+                </form>
+            </div>
+            <p class="text-muted">Total spent: <strong>₹{{ total_spent }}</strong></p>
+            <canvas id="spendingChart" height="120"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="app-card p-4">
+            <h5>Category Spending</h5>
+            {% for item in category_totals %}
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="rounded-circle {{ item.swatch_class }}" style="width: 12px; height: 12px; display: inline-block;"></span>
+                    <span>{{ item.name }}</span>
+                </div>
+                <strong>₹{{ item.spent }}</strong>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{{ chart_data|json_script:'spending-chart-data' }}
+<script>
+    const chartData = JSON.parse(document.getElementById('spending-chart-data').textContent);
+
+    new Chart(document.getElementById('spendingChart'), {
+        type: 'bar',
+        data: {
+            labels: chartData.labels,
+            datasets: [{
+                label: 'Spent',
+                data: chartData.amounts,
+                backgroundColor: chartData.colors,
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+</script>
+{% endblock %}

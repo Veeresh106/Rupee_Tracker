@@ -1,0 +1,39 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<div class="landing-page">
+    <div class="row align-items-center g-5">
+        <section class="col-lg-6 landing-copy">
+            <div class="brand-pink">ExpenseTracker</div>
+            <h1>Make room for <span>what matters.</span></h1>
+            <p>One calm place to track spending, set monthly budgets, and know where you stand.</p>
+            <div class="d-flex flex-wrap gap-3 mt-4">
+                <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4">Create your account</a>
+                <a href="{% url 'login' %}" class="btn btn-outline-dark btn-lg px-4">Sign in</a>
+            </div>
+
+            <div class="row landing-features mt-5 g-3">
+                <div class="col-md-4"><div class="soft-box h-100"><div class="fs-4 mb-2">↗</div><h6>Daily spending</h6><small class="text-muted">Keep every purchase in view.</small></div></div>
+                <div class="col-md-4"><div class="soft-box h-100"><div class="fs-4 mb-2">◎</div><h6>Monthly plans</h6><small class="text-muted">Set a limit for each category.</small></div></div>
+                <div class="col-md-4"><div class="soft-box h-100"><div class="fs-4 mb-2">!</div><h6>Timely alerts</h6><small class="text-muted">Notice when a budget nears its limit.</small></div></div>
+            </div>
+        </section>
+
+        <div class="col-lg-6">
+            <div class="landing-preview">
+                <div class="landing-preview-screen">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div><div class="small text-muted">MONTHLY SNAPSHOT</div><strong>October overview</strong></div>
+                        <span class="alert-badge normal">On track</span>
+                    </div>
+                    <div class="preview-metric mb-4"><small>Total spent</small><strong>₹24,680</strong></div>
+                    <div class="preview-line"><span><i class="preview-dot"></i>Home & bills</span><strong>₹10,200</strong></div>
+                    <div class="preview-line"><span><i class="preview-dot blue"></i>Food</span><strong>₹6,450</strong></div>
+                    <div class="preview-line"><span><i class="preview-dot teal"></i>Travel</span><strong>₹3,180</strong></div>
+                    <div class="preview-line"><span class="text-muted">Other categories</span><strong>₹4,850</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<div class="auth-page my-3">
+    {% include 'tracker/partials/auth_story.html' %}
+    <section class="auth-form-panel" aria-labelledby="login-title">
+        <div class="auth-form-card">
+            <div class="auth-eyebrow">Welcome back</div>
+            <h2 id="login-title">Sign in to your account</h2>
+            <p class="auth-form-intro">Pick up right where you left off.</p>
+            <form method="post">
+                {% csrf_token %}
+                {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary auth-submit w-100">Sign in</button>
+            </form>
+            <p class="mt-4 mb-0 text-center">New to ExpenseTracker? <a href="{% url 'register' %}">Create an account</a></p>
+        </div>
+    </section>
+</div>
+{% endblock %}
